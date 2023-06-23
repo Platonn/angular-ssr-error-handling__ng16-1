@@ -1,8 +1,9 @@
-import { APP_INITIALIZER, NgModule, inject } from '@angular/core';
+import { APP_INITIALIZER, ErrorHandler, NgModule, inject } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { PlatformLocation } from '@angular/common';
 import { AppComponent } from './app.component';
+import { CustomErrorHandler } from './custom-error-handler';
 
 const appInitializer = () => {
   const url = inject(PlatformLocation).href;
@@ -21,6 +22,10 @@ const appInitializer = () => {
       provide: APP_INITIALIZER,
       useFactory: appInitializer,
       multi: true,
+    },
+    {
+      provide: ErrorHandler,
+      useClass: CustomErrorHandler,
     },
   ],
   bootstrap: [AppComponent],
