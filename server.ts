@@ -1,5 +1,6 @@
 import 'zone.js/node';
 
+import { APP_BASE_HREF } from '@angular/common';
 import { ngExpressEngine } from '@nguniversal/express-engine';
 import * as express from 'express';
 import { existsSync } from 'node:fs';
@@ -38,7 +39,7 @@ export function app(): express.Express {
   );
 
   // All regular routes use the Universal engine
-  server.get('*', (req, res, next) => {
+  server.get('/handler_propagate/*', (req, res) => {
     function propagateErrorToClient(error: Error) {
       res.status(500).send(format(error));
     }
@@ -66,6 +67,13 @@ export function app(): express.Express {
         res.status(200).send(html);
       }
     );
+  });
+
+  server.get('*', (req, res) => {
+    res.render(indexHtml, {
+      req,
+      providers: [{ provide: APP_BASE_HREF, useValue: req.baseUrl }],
+    });
   });
 
   return server;

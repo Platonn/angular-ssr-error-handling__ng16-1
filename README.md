@@ -1,27 +1,31 @@
-# TestNg161X
-
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 16.1.1.
+# SSR error handling
 
 ## Development server
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+`npm run dev:ssr`
 
-## Code scaffolding
+## How to trigger errors and handle them in various strategies
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+Request the URL. The suffix of the URL controls where the error is thrown, and prefix controls how the error is handled. Examples:
 
-## Build
+- `curl http://localhost:4200/handler_propagate/errorIn_asyncRender` to trigger an error in async render and handle it in a custom `ErrorHandler` by propagating it to the client via a custom injection token `PROPAGATE_ERROR_TO_CLIENT`.
+- `curl http://localhost:4200/handler_rethrow/errorIn_asyncRender` to trigger an error in async render and handle it in custom `ErrorHandler` by re-throwing it.
+- `curl http://localhost:4200/handler_default/errorIn_syncConstrucor` to trigger an error in synchronous constructor of the `AppComponent` and handle it in the default `ErrorHandler` by just logging it to the console.
+- `curl http://localhost:4200/handler_default/errorIn_appInitializer` to trigger an error in `APP_INITIALIZER` and handle it in the default `ErrorHandler` by just logging it to the console.
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+### Throwing errors
 
-## Running unit tests
+| URL suffix               | Where error is thrown       |
+| ------------------------ | --------------------------- |
+| /errorIn_appInitializer  | APP_INITIALIZER             |
+| /errorIn_syncConstructor | constructor of AppComponent |
+| /errorIn_syncRender      | ngOnInit of AppComponent    |
+| /errorIn_asyncRender     | constructor of AppComponent |
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+### Handling errors
 
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+| URL prefix         | How error is handled in ErrorHandler                                                   | Problems                           |
+| ------------------ | -------------------------------------------------------------------------------------- | ---------------------------------- |
+| /handler_propagate | propagate error to the client via a custom injection token `PROPAGATE_ERROR_TO_CLIENT` |                                    |
+| /handler_rethrow   | rethrow of any error (even async) to the client                                        | async errors cause crashing NodeJS |
+| /handler_default   | default ErrorHandler - just log to console                                             |                                    |
