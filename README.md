@@ -27,5 +27,5 @@ Request the URL. The prefix of the URL controls how the error is handled, and su
 | URL prefix         | How error is handled in ErrorHandler                                                   | Problems                           |
 | ------------------ | -------------------------------------------------------------------------------------- | ---------------------------------- |
 | /handler_propagate | propagate error to the client via a custom injection token `PROPAGATE_ERROR_TO_CLIENT` |                                    |
-| /handler_rethrow   | rethrow of any error (even async) to the client                                        | async errors cause crashing NodeJS |
-| /handler_default   | default ErrorHandler - just log to console                                             |                                    |
+| /handler_rethrow   | re-throw error                                                                         | async errors cause crashing NodeJS |
+| /handler_default   | (default Angular ErrorHandler) just log to console                                     |                                    |
