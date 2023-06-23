@@ -6,7 +6,7 @@
 
 ## How to trigger errors and handle them in various strategies
 
-Request the URL. The suffix of the URL controls where the error is thrown, and prefix controls how the error is handled. Examples:
+Request the URL. The prefix of the URL controls how the error is handled, and suffix controls where the error is thrown. Examples:
 
 - `curl http://localhost:4200/handler_propagate/errorIn_asyncRender` to trigger an error in async render and handle it in a custom `ErrorHandler` by propagating it to the client via a custom injection token `PROPAGATE_ERROR_TO_CLIENT`.
 - `curl http://localhost:4200/handler_rethrow/errorIn_asyncRender` to trigger an error in async render and handle it in custom `ErrorHandler` by re-throwing it.
